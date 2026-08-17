@@ -1,53 +1,103 @@
+// Находим элементы на странице
 let taskInput = document.querySelector('#taskInput');
 let addButton = document.querySelector('#addButton');
 let taskList = document.querySelector('#taskList');
 
-// Изначально это пустой массив, который будет хранить объекты задач
+// Состояние приложения
 let tasks = [];
 
-// Отдельная функция рендеринга
+// Функция рендеринга
 function renderTasks() {
-    // Очищаем текущее содержимое списка перед новой отрисовкой, чтобы задачи не дублировались при каждом добавлении
     taskList.innerHTML = '';
 
-    // Проходим по каждому объекту в массиве tasks
     for (let i = 0; i < tasks.length; i++) {
         let currentTask = tasks[i];
 
-        // Создание тега <li>
+        // Элемент списка <li>
         let listItem = document.createElement('li');
-        
-        // Добавляем текст задачи безопасно через textContent
-        listItem.textContent = currentTask.text;
+        // Сохраняем уникальный ID задачи прямо в HTML-тег с помощью data-атрибута
+        listItem.dataset.id = currentTask.id;
 
-        // Вставляем готовый <li> внутрь контейнера <ul>
+        // Чекбокс смены статуса
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = currentTask.completed;
+        checkbox.classList.add('toggle-checkbox'); 
+
+        let taskSpan = document.createElement('span');
+        taskSpan.textContent = currentTask.text;
+
+        // Если задача выполнена - зачеркиваем ее
+        if (currentTask.completed) {
+            taskSpan.classList.add('completed');
+        }
+
+        // Кнопка «Удалить» 
+        let deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Удалить';
+        deleteButton.classList.add('delete-button'); // класс для отслеживания клика
+
+        // Собираем все внутрь <li>
+        listItem.appendChild(checkbox);
+        listItem.appendChild(taskSpan);
+        listItem.appendChild(deleteButton);
+
+        // Добавляем готовый <li> в <ul>
         taskList.appendChild(listItem);
     }
 }
 
-//  Добавление задачи (обработка событий)
+// Добавление новой задачи
 addButton.addEventListener('click', function() {
-    // Получаем текст из инпута. .trim() удаляет лишние пробелы в начале и конце
     let textValue = taskInput.value.trim();
 
-    // Проверка на ошибки: запрет на добавление пустых строк
     if (textValue === '') {
-        return; // Если пусто - прерываем выполнение функции
+        return;
     }
 
-    // Создаем новый объект задачи согласно требованиям
     let newTask = {
-        id: Date.now(), // Генерируем уникальный ID на основе текущего времени
-        text: textValue, // Текст задачи
-        completed: false // Булевое значение статуса выполнения
+        id: Date.now(),
+        text: textValue,
+        completed: false
     };
 
-    // Добавляем созданный объект в конец нашего массива данных
     tasks.push(newTask);
-
-    // Очищаем поле ввода, чтобы пользователю было удобно вводить следующую задачу
     taskInput.value = '';
-
-    // Вызываем функцию рендеринга для обновления интерфейса
     renderTasks();
+});
+
+
+// Делегирование событий 
+//  Навешиваем ВСЕГО ОДИН обработчик на общий родитель <ul>
+taskList.addEventListener('click', function(event) {
+    // event.target - это тот конкретный элемент, на который фактически кликнул пользователь
+    let target = event.target;
+
+    // Находим родительский <li> кликнутого элемента, чтобы узнать id задачи
+    let parentListItem = target.closest('li');
+    if (!parentListItem) return;
+
+    // Извлекаем id из data-атрибута и переводим в число
+    let clickedTaskId = Number(parentListItem.dataset.id);
+
+    // Ситуация А: Кликнули по чекбоксу смены статуса
+    if (target.classList.contains('toggle-checkbox')) {
+        for (let i = 0; i < tasks.length; i++) {
+            if (tasks[i].id === clickedTaskId) {
+                // Меняем булевое значение на противоположное
+                tasks[i].completed = !tasks[i].completed;
+                break;
+            }
+        }
+        renderTasks(); // Перерисовываем список
+    }
+
+    // Ситуация Б: Кликнули по кнопке «Удалить»
+    if (target.classList.contains('delete-button')) {
+        // Оставляем в массиве только те задачи, id которых не совпадает с удаляемым
+        tasks = tasks.filter(function(task) {
+            return task.id !== clickedTaskId;
+        });
+        renderTasks(); // Перерисовываем список
+    }
 });
