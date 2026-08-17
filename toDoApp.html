@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список задач v2</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.60;
+        }
+        li {
+            margin-bottom: 8px;
+            list-style: none;
+        }
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        button.delete-button {
+            margin-left: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Список задач</h2>
+    
+    <div>
+        <input type="text" id="taskInput" placeholder="Введите задачу...">
+        <button id="addButton">Добавить</button>
+    </div>
+    
+    <ul id="taskList"></ul>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
