@@ -3,33 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список задач v2</title>
-    <style>
-        .completed {
-            text-decoration: line-through;
-            opacity: 0.60;
-        }
-        li {
-            margin-bottom: 8px;
-            list-style: none;
-        }
-        input[type="checkbox"] {
-            margin-right: 8px;
-        }
-        button.delete-button {
-            margin-left: 12px;
-        }
-    </style>
+    <title>Task Tracker - Этап 3</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Список задач</h2>
-    
-    <div>
-        <input type="text" id="taskInput" placeholder="Введите задачу...">
-        <button id="addButton">Добавить</button>
-    </div>
-    
-    <ul id="taskList"></ul>
+    <main class="app-wrapper">
+        <h2 class="app-title">Список задач</h2>
+        
+        <div class="input-section">
+            <input type="text" class="task-input" placeholder="Что нужно сделать?">
+            <button class="btn btn-add">Добавить</button>
+        </div>
+
+        <!-- Блок фильтрации -->
+        <div class="filters-section">
+            <button class="btn btn-filter filter-all active" data-filter="all">Все</button>
+            <button class="btn btn-filter filter-active" data-filter="active">Активные</button>
+            <button class="btn btn-filter filter-completed" data-filter="completed">Завершенные</button>
+        </div>
+
+        <ul class="task-list"></ul>
+
+        <!-- фикс неудаления нескольких задач при выделении нескольких чекбоксов -->
+        <div class="actions-section">
+            <button class="btn btn-danger bulk-delete-btn">Удалить выделенные (завершенные)</button>
+        </div>
+    </main>
 
     <script src="script.js" defer></script>
 </body>
